@@ -1,0 +1,71 @@
+# ============================================================================
+# Baby Sweep Systemd Service Unit
+# ============================================================================
+#
+# This systemd service file allows Baby Sweep to run as a system service,
+# automatically starting on boot and restarting on failure.
+#
+# Installation:
+#   1. Copy this file to /etc/systemd/system/
+#      sudo cp baby-sweep.service /etc/systemd/system/
+#
+#   2. Update the paths and user in this file to match your setup
+#
+#   3. Reload systemd
+#      sudo systemctl daemon-reload
+#
+#   4. Enable the service to start on boot
+#      sudo systemctl enable baby-sweep
+#
+#   5. Start the service
+#      sudo systemctl start baby-sweep
+#
+# Management commands:
+#   sudo systemctl status baby-sweep    # Check status
+#   sudo systemctl start baby-sweep     # Start service
+#   sudo systemctl stop baby-sweep      # Stop service
+#   sudo systemctl restart baby-sweep   # Restart service
+#   sudo systemctl logs baby-sweep      # View logs
+# ============================================================================
+
+[Unit]
+Description=Baby Sweep - Digital Baby Pool Application
+Documentation=https://github.com/yourusername/baby-sweep
+After=network.target
+
+[Service]
+Type=simple
+
+# IMPORTANT: Update these paths and user to match your setup
+User=babysweep
+Group=babysweep
+WorkingDirectory=/opt/baby-sweep/backend
+
+# Environment file (contains APP_PASSWORD, etc.)
+EnvironmentFile=/opt/baby-sweep/backend/.env
+
+# Start command
+ExecStart=/usr/bin/node server.js
+
+# Restart policy
+Restart=always
+RestartSec=10
+
+# Resource limits (for minimal hardware)
+MemoryLimit=512M
+MemoryMax=768M
+
+# Security hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/baby-sweep/backend/data
+
+# Standard output/error
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=baby-sweep
+
+[Install]
+WantedBy=multi-user.target
