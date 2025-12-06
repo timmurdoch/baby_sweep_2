@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import CalendarView from './CalendarView';
 import moment from 'moment';
 
@@ -42,6 +42,21 @@ function App() {
   // Login form
   const [password, setPassword] = useState('');
   const [loginError, setLoginError] = useState('');
+
+  // ===== COMPUTED VALUES =====
+
+  // Calculate date range: 4 weeks either side of due date
+  const dateRange = useMemo(() => {
+    if (!settings.due_date) {
+      return { minDate: '', maxDate: '' };
+    }
+
+    const dueDate = moment(settings.due_date);
+    const minDate = dueDate.clone().subtract(4, 'weeks').format('YYYY-MM-DD');
+    const maxDate = dueDate.clone().add(4, 'weeks').format('YYYY-MM-DD');
+
+    return { minDate, maxDate };
+  }, [settings.due_date]);
 
   // ===== EFFECTS =====
 
@@ -526,7 +541,8 @@ function App() {
                 className="form-input"
                 value={formData.birth_date}
                 onChange={(e) => handleFormChange('birth_date', e.target.value)}
-                max={settings.due_date}
+                min={dateRange.minDate}
+                max={dateRange.maxDate}
                 required
               />
             </div>
@@ -639,6 +655,7 @@ function App() {
               onSlotSelect={handleCalendarSlotClick}
               onEventClick={handleEventClick}
               selectedSlots={selectedTimeSlots}
+              defaultDate={settings.due_date}
             />
           </div>
         </div>
@@ -652,6 +669,7 @@ function App() {
             events={calendarEvents}
             onEventClick={handleEventClick}
             readOnly={true}
+            defaultDate={settings.due_date}
           />
         </div>
       )}
