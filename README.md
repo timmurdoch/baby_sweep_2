@@ -56,7 +56,7 @@ For detailed setup instructions, see [QUICKSTART.md](QUICKSTART.md)
 - **Custom CSS** - Mobile-first responsive design (no frameworks)
 
 ### Backend
-- **Node.js 18+** - JavaScript runtime
+- **Node.js 20+** - JavaScript runtime (LTS)
 - **Express 4.18** - Web framework
 - **SQLite** - Self-contained database (better-sqlite3)
 - **bcrypt** - Password hashing
@@ -101,7 +101,7 @@ baby-sweep/
 
 ### Prerequisites
 
-- **Node.js 18+** and npm
+- **Node.js 20+** and npm (LTS version recommended)
 - **Docker & Docker Compose** (for containerized deployment)
 - **Git** for cloning the repository
 
@@ -189,6 +189,12 @@ REACT_APP_INCLUDE_SURPRISE_GENDER=true       # Show "Surprise" option
 REACT_APP_PRIMARY_COLOR=#4A90E2              # Theme color
 ```
 
+> ⚠️ **Important:** When using a reverse proxy (Nginx, Cloudflare Tunnel, etc.), `REACT_APP_API_URL` should **NOT** include the port number. Use the proxy URL instead:
+> - ✅ Correct: `REACT_APP_API_URL=https://babysweep.example.com`
+> - ❌ Incorrect: `REACT_APP_API_URL=https://babysweep.example.com:3001`
+>
+> Including a port number when using HTTPS can cause "Mixed Content" errors where the HTTPS frontend cannot connect to an HTTP backend.
+
 For detailed configuration documentation, see [ENV_CONFIGURATION.md](ENV_CONFIGURATION.md)
 
 ## 🚢 Deployment
@@ -210,19 +216,74 @@ Before deploying to production:
 
 For complete deployment guidance, see [DEPLOYMENT-CHECKLIST.md](DEPLOYMENT-CHECKLIST.md)
 
+### Cloudflare Tunnel Setup (Optional)
+
+Cloudflare Tunnel provides secure HTTPS access without opening ports or managing SSL certificates.
+
+**Basic Setup:**
+
+1. Install Cloudflare Tunnel on your server:
+   ```bash
+   curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb -o cloudflared.deb
+   sudo dpkg -i cloudflared.deb
+   ```
+
+2. Authenticate with Cloudflare:
+   ```bash
+   cloudflared tunnel login
+   ```
+
+3. Create a tunnel:
+   ```bash
+   cloudflared tunnel create baby-sweep
+   ```
+
+4. Configure the tunnel to route traffic to your backend:
+   ```yaml
+   # ~/.cloudflared/config.yml
+   tunnel: <tunnel-id>
+   credentials-file: /home/user/.cloudflared/<tunnel-id>.json
+
+   ingress:
+     - hostname: babysweep.example.com
+       service: http://localhost:3001
+     - service: http_status:404
+   ```
+
+5. Route DNS to the tunnel:
+   ```bash
+   cloudflared tunnel route dns baby-sweep babysweep.example.com
+   ```
+
+6. Update frontend configuration:
+   ```bash
+   # frontend/.env
+   REACT_APP_API_URL=https://babysweep.example.com
+   # NOTE: No port number when using Cloudflare Tunnel!
+   ```
+
+7. Run the tunnel:
+   ```bash
+   cloudflared tunnel run baby-sweep
+   ```
+
+For detailed Cloudflare Tunnel setup including systemd service configuration, see [PROXMOX-LXC-INSTALL.md](PROXMOX-LXC-INSTALL.md)
+
 ### Resource Requirements
 
 **Minimum:**
 - 512MB RAM
 - 1 CPU core
-- 1GB storage
+- 16GB storage (npm build process requires significant disk space)
 - Suitable for personal/family use
 
 **Recommended:**
 - 1GB RAM
 - 2 CPU cores
-- 5GB storage
+- 20GB storage
 - Better for larger gatherings
+
+> ⚠️ **Note:** The npm build process for the React frontend requires substantial disk space. If you encounter `ENOSPC: no space left on device` errors during installation, you need to increase your disk allocation to at least 16GB.
 
 ## 📡 API Documentation
 
