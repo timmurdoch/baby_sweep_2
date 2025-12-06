@@ -27,6 +27,18 @@
   box-sizing: border-box;
 }
 
+/* Better touch interactions on mobile */
+button, a, input, select, textarea, [role="button"] {
+  /* Remove tap highlight on mobile browsers for better custom interactions */
+  -webkit-tap-highlight-color: rgba(74, 144, 226, 0.1);
+  tap-highlight-color: rgba(74, 144, 226, 0.1);
+}
+
+/* Improve touch target areas */
+button, a, input[type="radio"], input[type="checkbox"] {
+  touch-action: manipulation; /* Prevents double-tap zoom on touch devices */
+}
+
 html, body {
   height: 100%;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -36,6 +48,14 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   color: var(--text-primary);
   background: linear-gradient(135deg, #f5f7fa 0%, #e8f0fe 100%);
+  /* Smooth scrolling for better mobile experience */
+  scroll-behavior: smooth;
+  /* Prevent text size adjustment on orientation change */
+  -webkit-text-size-adjust: 100%;
+  -moz-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Improve touch scrolling on iOS */
+  -webkit-overflow-scrolling: touch;
 }
 
 #root {
@@ -136,7 +156,7 @@ html, body {
 }
 
 .nav-tab {
-  padding: 12px 24px;
+  padding: 14px 24px;
   border: none;
   background: transparent;
   color: var(--text-secondary);
@@ -146,6 +166,10 @@ html, body {
   border-radius: 8px 8px 0 0;
   transition: all 0.3s ease;
   position: relative;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .nav-tab:hover {
@@ -171,13 +195,14 @@ html, body {
 
 .logout-button {
   margin-top: 20px;
-  padding: 10px 20px;
+  padding: 12px 20px;
   border: 1px solid var(--border-color);
   background: white;
   color: var(--text-secondary);
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: 44px;
 }
 
 .logout-button:hover {
@@ -212,13 +237,14 @@ html, body {
 .form-select,
 .form-textarea {
   width: 100%;
-  padding: 12px;
+  padding: 14px;
   border: 2px solid var(--border-color);
   border-radius: 8px;
   font-size: 1rem;
   font-family: inherit;
   transition: all 0.3s ease;
   background: white;
+  min-height: 44px;
 }
 
 .form-input:focus,
@@ -257,18 +283,23 @@ html, body {
   display: flex;
   align-items: center;
   cursor: pointer;
+  padding: 8px;
+  min-height: 44px;
 }
 
 .radio-option input[type="radio"] {
-  margin-right: 8px;
+  margin-right: 10px;
   cursor: pointer;
-  width: 18px;
-  height: 18px;
+  width: 20px;
+  height: 20px;
+  min-width: 20px;
+  min-height: 20px;
 }
 
 .radio-option label {
   cursor: pointer;
   font-size: 1rem;
+  padding: 8px;
 }
 
 /* Weight Input Group */
@@ -301,13 +332,14 @@ html, body {
 
 .unit-button {
   flex: 1;
-  padding: 8px 16px;
+  padding: 12px 16px;
   border: 2px solid var(--border-color);
   background: white;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
+  min-height: 44px;
 }
 
 .unit-button.active {
@@ -321,7 +353,7 @@ html, body {
    ============================================================================ */
 
 .btn {
-  padding: 12px 24px;
+  padding: 14px 24px;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -330,6 +362,7 @@ html, body {
   transition: all 0.3s ease;
   text-align: center;
   display: inline-block;
+  min-height: 44px;
 }
 
 .btn-primary {
@@ -497,6 +530,8 @@ html, body {
 
 .calendar-container {
   margin-top: 30px;
+  height: 600px;
+  min-height: 500px;
 }
 
 .calendar-event {
@@ -610,12 +645,12 @@ html, body {
 .modal-close {
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   cursor: pointer;
   color: var(--text-secondary);
-  padding: 0;
-  width: 30px;
-  height: 30px;
+  padding: 8px;
+  min-width: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -763,31 +798,124 @@ html, body {
   }
 }
 
-/* Mobile optimizations */
-@media (max-width: 767px) {
+/* Small mobile devices - portrait phones */
+@media (max-width: 480px) {
+  .app-container {
+    padding: 10px;
+  }
+
   .app-title {
-    font-size: 2rem;
+    font-size: 1.5rem;
+  }
+
+  .app-subtitle {
+    font-size: 0.9rem;
   }
 
   .content-container {
-    padding: 20px;
+    padding: 12px;
+  }
+
+  /* Stack navigation tabs vertically on very small screens if needed */
+  .nav-tab {
+    font-size: 0.9rem;
+    padding: 10px 14px;
+  }
+
+  /* Calendar - smaller on very small screens */
+  .calendar-container {
+    height: 400px;
+  }
+
+  /* Form inputs - optimize for mobile keyboards */
+  .form-input,
+  .form-select {
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .guess-name {
+    font-size: 1.1rem;
+  }
+
+  .modal-title {
+    font-size: 1.2rem;
+  }
+}
+
+/* Landscape orientation - optimize for horizontal mobile screens */
+@media (max-width: 896px) and (orientation: landscape) {
+  .app-container {
+    padding: 10px 15px;
+  }
+
+  .calendar-container {
+    height: 350px;
+  }
+
+  .content-container {
+    padding: 15px;
+  }
+
+  /* Make better use of horizontal space */
+  .login-container {
+    padding: 15px;
+  }
+
+  .modal-content {
+    max-height: 85vh;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  /* Reduce overall padding for more screen real estate */
+  .app-container {
+    padding: 15px;
+  }
+
+  .app-title {
+    font-size: 1.8rem;
+  }
+
+  .app-subtitle {
+    font-size: 1rem;
+  }
+
+  .content-container {
+    padding: 15px;
     border-radius: 8px;
   }
 
+  /* Navigation tabs - larger touch targets, better spacing */
   .nav-tabs {
-    gap: 5px;
+    gap: 8px;
+    margin-bottom: 20px;
   }
 
   .nav-tab {
-    padding: 10px 16px;
-    font-size: 0.9rem;
+    padding: 12px 18px;
+    font-size: 0.95rem;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  /* Modal - near full screen on mobile */
+  .modal-overlay {
+    padding: 10px;
   }
 
   .modal-content {
     padding: 20px;
-    margin: 10px;
+    margin: 0;
+    max-height: 90vh;
+    border-radius: 12px;
   }
 
+  .modal-title {
+    font-size: 1.3rem;
+  }
+
+  /* Weight inputs - stack vertically for easier input */
   .weight-input-group {
     flex-direction: column;
     gap: 10px;
@@ -797,12 +925,74 @@ html, body {
     display: none;
   }
 
+  /* Calendar - responsive height and better touch targets */
   .calendar-container {
     overflow-x: auto;
+    height: 500px;
+    margin-top: 20px;
   }
 
+  /* Make calendar toolbar buttons larger for touch */
+  .rbc-toolbar button {
+    padding: 10px 14px;
+    font-size: 0.85rem;
+    min-height: 44px;
+  }
+
+  .rbc-toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .rbc-toolbar-label {
+    font-size: 1rem;
+    padding: 8px;
+  }
+
+  /* Calendar headers - better readability on small screens */
+  .rbc-header {
+    padding: 12px 2px;
+    font-size: 0.85rem;
+  }
+
+  /* Guess cards - better spacing on mobile */
+  .guess-card {
+    padding: 15px;
+  }
+
+  .guess-name {
+    font-size: 1.2rem;
+  }
+
+  /* Login box */
   .login-box {
     padding: 30px 20px;
+  }
+
+  .login-title {
+    font-size: 1.8rem;
+  }
+
+  /* Form labels - better readability */
+  .form-label {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+
+  /* Radio buttons - more spacing for easier selection */
+  .radio-group {
+    gap: 12px;
+  }
+
+  /* Unit toggle - full width buttons */
+  .unit-toggle {
+    gap: 12px;
+  }
+
+  /* Logout button - full width for easier access */
+  .logout-button {
+    width: 100%;
+    margin-top: 15px;
   }
 }
 

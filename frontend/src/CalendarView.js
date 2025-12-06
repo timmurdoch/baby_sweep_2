@@ -95,7 +95,7 @@ function CalendarView({
         events={events}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 600 }}
+        style={{ height: '100%', minHeight: 500 }}
         eventPropGetter={eventStyleGetter}
         selectable={!readOnly}
         onSelectSlot={handleSelectSlot}
