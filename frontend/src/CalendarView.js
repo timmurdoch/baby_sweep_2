@@ -16,13 +16,15 @@ const localizer = momentLocalizer(moment);
  * - onEventClick: Function to handle event click
  * - selectedSlots: Array of selected time slots (optional)
  * - readOnly: Boolean for read-only mode
+ * - defaultDate: Default date to display on calendar (optional)
  */
 function CalendarView({
   events = [],
   onSlotSelect,
   onEventClick,
   selectedSlots = [],
-  readOnly = false
+  readOnly = false,
+  defaultDate
 }) {
 
   /**
@@ -100,6 +102,7 @@ function CalendarView({
         onSelectEvent={handleSelectEvent}
         views={['month', 'week', 'day']}
         defaultView="month"
+        defaultDate={defaultDate ? new Date(defaultDate) : undefined}
         popup
         components={{
           event: EventComponent
