@@ -36,9 +36,15 @@ After=network.target
 [Service]
 Type=simple
 
-# IMPORTANT: Update these paths and user to match your setup
-User=babysweep
-Group=babysweep
+# IMPORTANT: Update this path to match your setup
+# Note: User= and Group= directives removed for LXC container compatibility
+# These directives can cause service startup failures in LXC environments with:
+#   - status=217/USER (Failed to determine user credentials)
+#   - status=216/GROUP (Failed to determine group credentials)
+# The service will run as root by default. For better security in non-LXC
+# environments, you can uncomment and configure these directives:
+# User=babysweep
+# Group=babysweep
 WorkingDirectory=/opt/baby-sweep/backend
 
 # Environment file (contains APP_PASSWORD, etc.)
