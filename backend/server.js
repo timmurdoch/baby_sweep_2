@@ -185,10 +185,21 @@ app.post('/api/guesses', requireAuth, (req, res) => {
       return res.status(400).json({ error: 'Invalid gender value' });
     }
 
-    // Validate birth date against due date
-    const dueDate = getSetting('due_date');
-    if (new Date(birth_date) > new Date(dueDate)) {
-      return res.status(400).json({ error: 'Birth date cannot be after due date' });
+    // Validate birth date is within 4 weeks before and after due date
+    const dueDate = new Date(getSetting('due_date'));
+    const birthDate = new Date(birth_date);
+
+    // Calculate date range: 4 weeks before and 4 weeks after due date
+    const minDate = new Date(dueDate);
+    minDate.setDate(dueDate.getDate() - 28); // 4 weeks before
+
+    const maxDate = new Date(dueDate);
+    maxDate.setDate(dueDate.getDate() + 28); // 4 weeks after
+
+    if (birthDate < minDate || birthDate > maxDate) {
+      return res.status(400).json({
+        error: 'Birth date must be within 4 weeks before and 4 weeks after the due date'
+      });
     }
 
     // Check for duplicates if not allowed
