@@ -465,6 +465,27 @@ function App() {
         <div className="content-container">
           <h2 className="text-center mb-30">Submit Your Guess</h2>
 
+          {/* Due Date Info */}
+          {settings.due_date && (
+            <div style={{
+              backgroundColor: '#FFF9E6',
+              border: '2px solid #FFD700',
+              borderRadius: '8px',
+              padding: '15px',
+              marginBottom: '30px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '1.1em', fontWeight: 'bold', marginBottom: '8px' }}>
+                📅 Due Date: {moment(settings.due_date).format('MMMM D, YYYY')}
+              </div>
+              <div style={{ fontSize: '0.9em', color: '#666' }}>
+                Valid guess range: {moment(dateRange.minDate).format('MMM D, YYYY')} - {moment(dateRange.maxDate).format('MMM D, YYYY')}
+                <br />
+                (4 weeks before and after the due date)
+              </div>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <div className="form-group">
               <label htmlFor="name" className="form-label required">Your Name</label>
@@ -656,6 +677,7 @@ function App() {
               onEventClick={handleEventClick}
               selectedSlots={selectedTimeSlots}
               defaultDate={settings.due_date}
+              dueDate={settings.due_date}
             />
           </div>
         </div>
@@ -670,6 +692,7 @@ function App() {
             onEventClick={handleEventClick}
             readOnly={true}
             defaultDate={settings.due_date}
+            dueDate={settings.due_date}
           />
         </div>
       )}
